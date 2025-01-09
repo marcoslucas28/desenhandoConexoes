@@ -7,6 +7,8 @@ export default {
 
         GRAY: "55628a",
 
-        WHITE: "#ffffff"
+        WHITE: "#ffffff",
+
+        GRADIENT_BLUE: "linear-gradient(131deg, rgba(4,28,108,1) 0%, rgba(55,115,234,1) 32%, rgba(136,220,249,1) 91%)",
     }
 }
