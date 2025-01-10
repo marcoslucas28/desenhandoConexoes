@@ -2,12 +2,15 @@ import { Container, Title, Menu } from './styles'
 
 import logo from '/logo.png'
 
+import { SideMenu } from '../../components/SideMenu'
+
 import { IoIosMenu } from 'react-icons/io'
 
 import { useState, useEffect } from 'react'
 
 export function Header(){
     const [isScrolled, setIsScrolled] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     function handleScroll(){
         setIsScrolled(window.scrollY > 20)
@@ -20,8 +23,9 @@ export function Header(){
     }, [])
 
     return(
-        <Container isScrolled={isScrolled}>
-            <Menu>
+        <Container $isscrolled={isScrolled}>
+            <SideMenu isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
+            <Menu onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <IoIosMenu />
             </Menu>
             

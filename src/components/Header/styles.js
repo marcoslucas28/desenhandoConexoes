@@ -10,7 +10,7 @@ export const Container = styled.header`
     position: fixed;
     top: 0;
     gap: 1rem;
-    background: ${({theme, isScrolled}) => isScrolled ? theme.COLORS.GRADIENT_BLUE : 'transparent'};
+    background: ${({theme, $isscrolled}) => $isscrolled ? theme.COLORS.GRADIENT_BLUE : 'transparent'};
     transition: all 0.3s ease-in-out;
 `
 
@@ -38,5 +38,9 @@ export const Menu = styled.button`
 
     svg {
         font-size: 3rem;
+    }
+
+    &:hover {
+        filter: none;
     }
 `
