@@ -10,8 +10,10 @@ export const Container = styled.header`
     position: fixed;
     top: 0;
     gap: 1rem;
-    background: ${({theme, $isscrolled}) => $isscrolled ? theme.COLORS.GRADIENT_BLUE : 'transparent'};
+    background: ${({theme, $isscrolled}) => $isscrolled ? theme.COLORS.BLUE_500 : 'transparent'};
     transition: all 0.3s ease-in-out;
+    z-index: 1000;
+    box-shadow: ${({$isscrolled}) => $isscrolled ? '0 10px 15px rgba(0, 0, 0, 0.1)' : 'none'};
 `
 
 export const Title = styled.div`
