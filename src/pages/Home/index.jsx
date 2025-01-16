@@ -12,6 +12,7 @@ import pngImg from '../../assets/iconpng.png'
 import send from '../../assets/Envie G-code.png'
 
 import { Header } from '../../components/Header'
+import { Footer } from '../../components/Footer'
 
 import { useState, useEffect } from 'react'
 
@@ -149,6 +150,8 @@ export function Home(){
                     </section>
                 </Swiper>
             </Tutorials>
+
+            <Footer />
         </Container>
     )
 }
