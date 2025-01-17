@@ -31,6 +31,23 @@ export const Form = styled.form`
         border-radius: 4px;
     }
 
+    button {
+        width: 100%;
+        border-radius: 6px;
+        border: none;
+        padding: 2rem;
+        background-color: ${({theme}) => theme.COLORS.BLUE_500};
+        text-align: center;
+        color: ${({theme}) => theme.COLORS.WHITE};
+        font-size: 1.6rem;
+
+
+        &:hover {
+            opacity: 1;
+            filter: none;
+        }
+    }
+
     textarea {
         border: none;
         background-color: ${({theme}) => theme.COLORS.WHITE};
