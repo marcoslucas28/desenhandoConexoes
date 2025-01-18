@@ -11,27 +11,36 @@ import drawing from '../../assets/desenho.png'
 import pngImg from '../../assets/iconpng.png'
 import send from '../../assets/Envie G-code.png'
 
+import video from '../../assets/video.mp4'
+
 import { Header } from '../../components/Header'
 import { Footer } from '../../components/Footer'
+import { Tutorial } from '../../components/Tutorial'
 
 import { useState, useEffect } from 'react'
 
 export function Home(){
+    const [isPoputOpen, setIsPoputOpen] = useState(false)
+    const [poputData, setPoputData] = useState({})
+
     const cardTutorials = [
         {
             img: drawing,
             title: "Crie seus desenhos",
-            description: "Aprenda como fazer seus proprios desenhos pelo site de forma simples e prática."
+            description: "Aprenda como fazer seus proprios desenhos pelo site de forma simples e prática.",
+            videoPath: video
         },
         {
             img: pngImg,
             title: "Transforme seus desenhos em G-code",
-            description: "Veja como transformar seus desenhos em código gcode de forma simples e prática para usar na CNC."
+            description: "Veja como transformar seus desenhos em código gcode de forma simples e prática para usar na CNC.",
+            videoPath: video
         },
         {
             img: send,
             title: "Imprima seus desenhos",
-            description: "Aprenda a enviar seus desenhos em gcode para a CNC."
+            description: "Aprenda a enviar seus desenhos em gcode para a CNC.",
+            videoPath: video
         },
     ]
 
@@ -42,6 +51,16 @@ export function Home(){
     const [index, setIndex] = useState(0)
     const [isDeleting, setIsDeleting] = useState(false)
     const [speed, setSpeed] = useState(150)
+
+    function handleCardClick(data){
+        setPoputData(data)
+        setIsPoputOpen(true)
+    }
+
+    function closePoput(){
+        setIsPoputOpen(false)
+        setPoputData({})
+    }
 
     useEffect(() => {
         function handleTyping(){
@@ -116,9 +135,9 @@ export function Home(){
                                 <div class="container">
                                     <div class="row">
                                             {
-                                                cardTutorials.map((card) => (
+                                                cardTutorials.map((card, index) => (
                                                     <SwiperSlide>
-                                                        <div class="col-xs-12 col-sm-4">
+                                                        <div key={index} onClick={() => handleCardClick(card)} class="col-xs-12 col-sm-4">
                                                             <div class="card">
                                                                 <a class="img-card" >
                                                                 <img src={card.img} />
@@ -152,6 +171,8 @@ export function Home(){
             </Tutorials>
 
             <Footer />
+
+            <Tutorial isOpen={isPoputOpen} data={poputData} onClose={closePoput} />
         </Container>
     )
 }
