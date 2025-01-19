@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { DEVICE_BREAKPOINTS } from '../../styles/deviceBreakpoints'
+
 export const Home = styled.header`
     display: flex;
     justify-content: space-between;
@@ -14,6 +16,20 @@ export const Home = styled.header`
     transition: all 0.3s ease-in-out;
     z-index: 1000;
     box-shadow: ${({$isscrolled}) => $isscrolled ? '0 10px 15px rgba(0, 0, 0, 0.1)' : 'none'};
+
+    #navbar {
+        display: none;
+    }
+
+    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+        #navbar {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+    }
 `
 
 export const Container = styled.header`
@@ -29,6 +45,20 @@ export const Container = styled.header`
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     position: ${({$isscrolled}) => $isscrolled ? 'fixed' : 'static'};
     margin-bottom: 2rem;
+
+    #navbar {
+        display: none;
+    }
+
+    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+        #navbar {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+    }
 
 `
 

@@ -3,6 +3,7 @@ import { Container, Title, Menu, Home } from './styles'
 import logo from '/logo.png'
 
 import { SideMenu } from '../../components/SideMenu'
+import { NavBar } from '../../components/NavBar'
 
 import { IoIosMenu } from 'react-icons/io'
 
@@ -35,14 +36,15 @@ export function Header({isInHome = false}){
                     <h1>Desenhando Conexões</h1>
                 </Title>
     
-                <div id='spacer'></div>
+                <div className='hidden'></div>
+                <NavBar id='navbar' />
             </Home>
         )
     }else {
         return(
         <Container $isscrolled={isScrolled}>
-            <SideMenu isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
-            <Menu onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <SideMenu className='hidden' isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
+            <Menu className='hidden' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 <IoIosMenu />
             </Menu>
             
@@ -51,7 +53,8 @@ export function Header({isInHome = false}){
                 <h1>Desenhando Conexões</h1>
             </Title>
 
-            <div id='spacer'></div>
+            <div className='hidden'></div>
+            <NavBar id='navbar' />
         </Container>
     )
     }

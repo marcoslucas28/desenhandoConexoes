@@ -63,10 +63,11 @@ export const Cursor = styled.span`
 `
 
 export const Content = styled.main`
-    margin: 2rem 0;
+    margin: 2rem auto;
     padding: 1rem;
     width: 100%;
     box-sizing: border-box;
+    max-width: 50rem;
 
     h1 {
         color: ${({theme}) => theme.COLORS.BLUE_200};
