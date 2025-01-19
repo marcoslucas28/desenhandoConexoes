@@ -97,7 +97,7 @@ export function Home(){
 
     return(
         <Container>
-            <Header />
+            <Header isInHome={true} />
             <HeroSection>
             <Title>
                 <h1>Dê vida às suas ideias:<br /> {text}<Cursor $isdeleting={isDeleting}>|</Cursor></h1>

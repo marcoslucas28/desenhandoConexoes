@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const Container = styled.header`
+export const Home = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,6 +14,22 @@ export const Container = styled.header`
     transition: all 0.3s ease-in-out;
     z-index: 1000;
     box-shadow: ${({$isscrolled}) => $isscrolled ? '0 10px 15px rgba(0, 0, 0, 0.1)' : 'none'};
+`
+
+export const Container = styled.header`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 1rem;
+    background: ${({theme}) => theme.COLORS.BLUE_500 };
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    position: ${({$isscrolled}) => $isscrolled ? 'fixed' : 'static'};
+    margin-bottom: 2rem;
+
 `
 
 export const Title = styled.div`

@@ -1,4 +1,4 @@
-import { Container, Title, Menu } from './styles'
+import { Container, Title, Menu, Home } from './styles'
 
 import logo from '/logo.png'
 
@@ -8,7 +8,7 @@ import { IoIosMenu } from 'react-icons/io'
 
 import { useState, useEffect } from 'react'
 
-export function Header(){
+export function Header({isInHome = false}){
     const [isScrolled, setIsScrolled] = useState(false)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -22,7 +22,24 @@ export function Header(){
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    return(
+    if(isInHome){
+        return(
+            <Home $isscrolled={isScrolled}>
+                <SideMenu isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
+                <Menu onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <IoIosMenu />
+                </Menu>
+                
+                <Title>
+                    <img src={logo} alt="Logo do projeto desenhando conexões" />
+                    <h1>Desenhando Conexões</h1>
+                </Title>
+    
+                <div id='spacer'></div>
+            </Home>
+        )
+    }else {
+        return(
         <Container $isscrolled={isScrolled}>
             <SideMenu isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
             <Menu onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -37,4 +54,5 @@ export function Header(){
             <div id='spacer'></div>
         </Container>
     )
+    }
 }
