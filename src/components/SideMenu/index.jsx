@@ -1,27 +1,13 @@
-import { Container, ButtonClose, Close, Nav } from './styles'
+import { Container, ButtonClose, Close } from './styles'
 
-import { ButtonText } from '../../components/ButtonText'
+import { NavBar } from '../../components/NavBar'
 
 import { IoIosClose } from 'react-icons/io'
-import { FaHome } from 'react-icons/fa'
-import { FaUsers } from 'react-icons/fa'
 
-import { useNavigate, useLocation } from 'react-router-dom'
-
-export function SideMenu({isVisible, onCloseMenu}){
-    const navigate = useNavigate()
-    const location = useLocation()
-
-    function handleNavigation(targetPath){
-        if(location.pathname === targetPath){
-            window.location.reload()
-        } else {
-            navigate(targetPath)
-        }
-    }
+export function SideMenu({isVisible, onCloseMenu, ...rest}){
 
     return(
-        <Container $isvisible={isVisible}>
+        <Container {...rest} $isvisible={isVisible}>
             <Close>
                 <ButtonClose onClick={onCloseMenu}>
                     <IoIosClose />
@@ -30,14 +16,7 @@ export function SideMenu({isVisible, onCloseMenu}){
                     </span>
                 </ButtonClose>
             </Close>
-            <Nav>
-                <div>
-                    <ButtonText onClick={() => handleNavigation("/")} title="Home" icon={FaHome} /> 
-                </div>
-                <div>
-                    <ButtonText onClick={() => handleNavigation("/about")} title="Sobre nos" icon={FaUsers} />
-                </div>
-            </Nav>
+            <NavBar />
             
             <div></div>
         </Container>

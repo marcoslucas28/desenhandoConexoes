@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-import { ButtonText } from '../../components/ButtonText'
-
 export const Container = styled.aside`
     position: fixed;
     width: 100%;

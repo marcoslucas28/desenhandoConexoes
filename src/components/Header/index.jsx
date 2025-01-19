@@ -25,8 +25,8 @@ export function Header({isInHome = false}){
     if(isInHome){
         return(
             <Home $isscrolled={isScrolled}>
-                <SideMenu isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
-                <Menu onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <SideMenu className='hidden' isVisible={isMenuOpen} onCloseMenu={() => setIsMenuOpen(false)} />
+                <Menu className='hidden' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     <IoIosMenu />
                 </Menu>
                 
