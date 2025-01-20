@@ -55,13 +55,18 @@ export function Footer(){
                 <Form>
                     <h1>Entre em contato</h1>
 
-                    <span>Nome:</span>
 
-                    <input type="text" placeholder='ex: João Silva' onChange={(e) => setName(e.target.value)} value={name} />
+                    <div id='name'>
+                        <div>
+                            <span>Nome:</span>
+                            <input type="text" placeholder='ex: João Silva' onChange={(e) => setName(e.target.value)} value={name} />
+                        </div>
 
-                    <span>Seu email:</span>
-
-                    <input type="email" placeholder='exemplo@email.com' onChange={(e) => setEmail(e.target.value)} value={email} />
+                        <div>
+                            <span>Seu email:</span>
+                            <input type="email" placeholder='exemplo@email.com' onChange={(e) => setEmail(e.target.value)} value={email} />
+                        </div>
+                    </div>
 
                     <span>Mensagem:</span>
                     <textarea placeholder='Escreva sua mensagem aqui' value={message} onChange={(e) => setMessage(e.target.value)}></textarea>

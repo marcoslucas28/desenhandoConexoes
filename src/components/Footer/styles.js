@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { DEVICE_BREAKPOINTS } from '../../styles/deviceBreakpoints'
+
 export const Container = styled.footer`
     display: flex;
     flex-direction: column;
@@ -16,6 +18,24 @@ export const Form = styled.form`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
+    max-width: 60rem;
+
+    #name {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+            flex-direction: row;
+
+            div {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    }
 
     h1 {
         font-size: 2rem;
@@ -32,7 +52,7 @@ export const Form = styled.form`
     }
 
     button {
-        width: 100%;
+        width: 90%;
         border-radius: 6px;
         border: none;
         padding: 2rem;
@@ -46,6 +66,10 @@ export const Form = styled.form`
             opacity: 1;
             filter: none;
         }
+
+        @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+            width: 70%;
+        }
     }
 
     textarea {
@@ -56,6 +80,12 @@ export const Form = styled.form`
         font-size: 1.6rem;
         height: 20rem;
         border-radius: 4px;
+
+
+        @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+            height: 10rem;
+            width: 70%;
+        }
     }
 
     span {
@@ -99,6 +129,11 @@ export const Content = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
+
+    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+        flex-direction: row;
+        align-items: baseline;
+    }
 `
 
 export const SocialMedia = styled.div`
