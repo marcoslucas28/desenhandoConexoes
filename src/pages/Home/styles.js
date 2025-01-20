@@ -84,6 +84,7 @@ export const Tutorials = styled.section`
     width: 80%;
     margin: 0 auto;
     padding: 1rem;
+    max-width: 55rem;
 
     h1 {
         margin-bottom: 1.5rem;

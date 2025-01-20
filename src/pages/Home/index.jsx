@@ -50,7 +50,7 @@ export function Home(){
     const [text, setText] = useState("")
     const [index, setIndex] = useState(0)
     const [isDeleting, setIsDeleting] = useState(false)
-    const [speed, setSpeed] = useState(150)
+    const [speed, setSpeed] = useState(100)
 
     function handleCardClick(data){
         setPoputData(data)
