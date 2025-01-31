@@ -14,11 +14,27 @@ export function Footer(){
     const [name, setName] = useState("")
     const [message, setMessage] = useState("")
     const [email, setEmail] = useState("")
+    const [isEmailValid, setIsEmailValid] = useState(true)
 
     const templateParams = {
         from_name: name,
         message: message,
         email: email
+    }
+
+
+    async function verifyEmail(){
+        try {
+            const response = await fetch(
+              `https://emailvalidation.abstractapi.com/v1/?api_key=6de92382f14c4533863ae8b1a8454497&email=${email}`
+            );
+            const data = await response.json();
+            
+            
+            return data.is_valid_format.value && data.deliverability === "DELIVERABLE";
+          } catch (error) {
+            console.error("Erro ao validar o e-mail:", error);
+          }
     }
 
     function handleSendMensage(e){
@@ -27,6 +43,21 @@ export function Footer(){
         if(!name || !email || !message){
             return alert("Preencha todos os campos para enviar sua mensagem.")
         }
+
+        verifyEmail().then((valid) => {
+            if (!valid) {
+                setIsEmailValid(false)
+              }else {
+                setIsEmailValid(true)
+              }
+        }).catch((error) => {
+            console.error("Erro ao validar o e-mail:", error);
+            setIsEmailValid(true)
+          });
+
+          if(!isEmailValid){
+            return alert("E-mail inválido! Verifique e tente novamente.");
+          }
 
         emailjs.send("service_ngd8xuc", "template_vc0njds", templateParams, "IauwFcCIABNUj9X8J").then((response) => {
             setName("")
@@ -37,6 +68,8 @@ export function Footer(){
             console.log("Error:", err)
             return alert("Algo deu errado, tente novamente mais tarde.")
         })
+
+        
     }
 
     return(
