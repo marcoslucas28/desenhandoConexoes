@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://desenhando-conexoes.vercel.app/sitemap.xml

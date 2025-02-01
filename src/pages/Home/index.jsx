@@ -18,6 +18,7 @@ import { Footer } from '../../components/Footer'
 import { Tutorial } from '../../components/Tutorial'
 
 import { useState, useEffect } from 'react'
+import { Helmet } from "react-helmet-async";
 
 export function Home(){
     const [isPoputOpen, setIsPoputOpen] = useState(false)
@@ -97,6 +98,25 @@ export function Home(){
 
     return(
         <Container>
+            <Helmet>
+                <title>Desenhando Conexões - Mini CNC Plotter</title>
+                <meta name="description" content="Descubra o projeto Desenhando Conexões: uma fusão entre robótica e arte. Explore tutoriais interativos para aprender a usar uma CNC plotter e crie suas próprias obras de arte digitais." />
+
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "WebPage",
+                    "name": "Desenhando Conexões",
+                    "url": "https://desenhando-conexoes.vercel.app/",
+                    "description": "Projeto 'Desenhando Conexões' integra robótica, programação e a expressão artística do desenho, convidando participantes de todas as idades a criar suas próprias obras através de uma mini CNC plotter e tutoriais interativos.",
+                    "about": {
+                        "@type": "CreativeWork",
+                        "name": "Desenhando Conexões",
+                        "description": "Iniciativa que une a paixão pela robótica e a criatividade do desenho para tornar o hobby mais inclusivo e atrativo."
+                    }
+                    })}
+                </script>
+            </Helmet>
             <Header isInHome={true} />
             <HeroSection>
             <Title>
@@ -129,30 +149,30 @@ export function Home(){
                     spaceBetween={30}
                     slidesPerView={1}
                 >
-                    <section class="wrapper">
-                        <div class="container-fostrap">
-                            <div class="content">
-                                <div class="container">
-                                    <div class="row">
+                    <section className="wrapper">
+                        <div className="container-fostrap">
+                            <div className="content">
+                                <div className="container">
+                                    <div className="row">
                                             {
                                                 cardTutorials.map((card, index) => (
-                                                    <SwiperSlide>
-                                                        <div key={index} onClick={() => handleCardClick(card)} class="col-xs-12 col-sm-4">
-                                                            <div class="card">
-                                                                <a class="img-card" >
+                                                    <SwiperSlide key={index}>
+                                                        <div  onClick={() => handleCardClick(card)} className="col-xs-12 col-sm-4">
+                                                            <div className="card">
+                                                                <a className="img-card" >
                                                                 <img src={card.img} />
                                                             </a>
-                                                                <div class="card-content">
-                                                                    <h4 class="card-title">
+                                                                <div className="card-content">
+                                                                    <h4 className="card-title">
                                                                         <a >{card.title}
                                                                     </a>
                                                                     </h4>
-                                                                    <p class="">
+                                                                    <p className="">
                                                                        {card.description}
                                                                     </p>
                                                                 </div>
-                                                                <div class="card-read-more">
-                                                                    <a  class="btn btn-link btn-block">
+                                                                <div className="card-read-more">
+                                                                    <a  className="btn btn-link btn-block">
                                                                         Veja
                                                                     </a>
                                                                 </div>

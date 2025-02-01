@@ -3,9 +3,33 @@ import { Container, Content } from './styles'
 import { Header } from '../../components/Header'
 import { Footer } from '../../components/Footer'
 
+import { Helmet } from "react-helmet-async";
+
 export function About(){
     return(
         <Container>
+            <Helmet>
+                <title>Desenhando Conexões - Sobre nos</title>
+                <meta name="description" content="Conheça a equipe Umibots, formada por estudantes da escola UMI Tânia Leite Santos. Somos apaixonados por robótica e tecnologia, participando de diversas competições de inovação. Nosso projeto, Desenhando Conexões, é um projeto de pesquisa apoiado pela FAPEMA, que integra arte e robótica para transformar a experiência educacional." />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "AboutPage",
+                    "name": "Sobre Nós - Robótica Umibots",
+                    "url": "https://desenhando-conexoes.vercel.app/about",
+                    "description": "Página dedicada à equipe Robótica Umibots da Umi Tania Leite Santos, responsável pelo projeto 'Desenhando Conexões'.",
+                    "mainEntity": {
+                        "@type": "Organization",
+                        "name": "Equipe Umibots",
+                        "url": "https://desenhando-conexoes.vercel.app/about",
+                        "description": "Equipe de robótica formada por estudantes da UMI Tânia Leite Santos, responsável pelo projeto 'Desenhando Conexões', que une tecnologia, criatividade e tutoriais interativos para inspirar participantes de todas as idades.",
+                        "sameAs": [
+                        "https://www.instagram.com/umibots",
+                        ]
+                    }
+                    })}
+                </script>
+            </Helmet>
             <Header />
             <Content>
                 <h1>Sobre nos</h1>
