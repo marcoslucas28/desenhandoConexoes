@@ -15,5 +15,6 @@ export default {
 
         GRADIENT_BLUE: "linear-gradient(131deg, rgba(4,28,108,1) 0%, rgba(55,115,234,1) 32%, rgba(136,220,249,1) 91%)",
         GRADIENT_BLUE_LIGHT: "linear-gradient(131deg, rgba(76,104,195,1) 0%, rgba(130,172,255,1) 34%, rgba(136,220,249,1) 92%)",
+        GRADIENT_GREEN: "linear-gradient(131deg, rgb(65, 187, 150)0%, rgb(83, 216, 176)34%, rgb(98, 202, 180) 92%)",
     }
 }

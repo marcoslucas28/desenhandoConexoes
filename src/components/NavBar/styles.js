@@ -30,5 +30,16 @@ export const Container = styled.nav`
             padding: 0;
             width: auto;
         }
+
+        #draw-button {
+            font-size: 1.6rem;
+            border: none;
+            background: ${({theme}) => theme.COLORS.GRADIENT_GREEN};
+            padding: 1rem;
+            max-width: 20rem;
+            color: ${({theme}) => theme.COLORS.WHITE};
+            border-radius: 8px;
+            font-weight: bold;
+        }
     }
 `
