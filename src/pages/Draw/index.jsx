@@ -1,9 +1,9 @@
-import { Container } from './styles'
-
+import { Container } from './styles';
 import React, { useState, useRef, useEffect } from 'react';
 import * as fabric from 'fabric';
+import { EraserBrush } from 'erase2d'
 
-import { Header } from '../../components/Header'
+import { Header } from '../../components/Header';
 
 export function Draw() {
     const canvasRef = useRef(null);
@@ -13,6 +13,10 @@ export function Draw() {
     const [startPoint, setStartPoint] = useState(null);
     const [tempObject, setTempObject] = useState(null);
     const [pencilWidth, setPencilWidth] = useState(1);
+    const [isObjectSelected, setIsObjectSelected] = useState(false);
+    const [pencilColor, setPencilColor] = useState('black');
+    const [eraserWidth, setEraserWidth] = useState(10);
+
 
     useEffect(() => {
         const newCanvas = new fabric.Canvas(canvasRef.current, {
@@ -22,6 +26,16 @@ export function Draw() {
             selection: false,
         });
         setCanvas(newCanvas);
+
+        newCanvas.on('object:added', (event) => {
+            if (event.target) {
+              event.target.erasable = true;
+            }
+        });
+      
+        newCanvas.on('path:created', (event) => {
+            event.path.erasable = true;
+        });
 
         return () => {
             newCanvas.dispose();
@@ -33,7 +47,32 @@ export function Draw() {
 
         canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
         canvas.freeDrawingBrush.width = pencilWidth;
-    }, [pencilWidth]);
+        canvas.freeDrawingBrush.color = pencilColor;
+
+    }, [pencilWidth, pencilColor, canvas]);
+
+
+    useEffect(() => {
+        if (!canvas) return;
+
+        const handleSelectionCreated = (event) => {
+            setIsObjectSelected(true);
+        }
+
+        const handleSelectionCleared = (event) => {
+            setIsObjectSelected(false);
+        }
+
+        canvas.on('selection:created', handleSelectionCreated);
+        canvas.on('selection:cleared', handleSelectionCleared);
+
+        return () => {
+            canvas.off('selection:created', handleSelectionCreated);
+            canvas.off('selection:cleared', handleSelectionCleared);
+        };
+
+    }, [canvas])
+
 
 
     const toolActions = {
@@ -41,9 +80,24 @@ export function Draw() {
             activate() {
                 canvas.isDrawingMode = true;
                 canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-                canvas.freeDrawingBrush.color = 'black';
+                canvas.freeDrawingBrush.color = pencilColor;
                 canvas.freeDrawingBrush.width = pencilWidth;
+                canvas.freeDrawingBrush.strokeLineCap = 'butt';
                 canvas.selection = false;
+                canvas.defaultCursor = 'crosshair';
+            },
+            deactivate() {
+                canvas.isDrawingMode = false;
+                canvas.selection = false;
+                canvas.defaultCursor = 'default';
+            },
+        },
+        eraser: {
+            activate() {
+                canvas.isDrawingMode = true;
+                canvas.freeDrawingBrush = new EraserBrush(canvas);
+                canvas.freeDrawingBrush.width = eraserWidth;
+                canvas.freeDrawingBrush.inverted = false;
                 canvas.defaultCursor = 'crosshair';
             },
             deactivate() {
@@ -62,6 +116,8 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
+                if (isObjectSelected) return;
+
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
                 const rect = new fabric.Rect({
@@ -74,11 +130,11 @@ export function Draw() {
                     strokeWidth: 2,
                     originX: 'left',
                     originY: 'top',
+                    selectable: false,
                 });
                 setTempObject(rect);
                 canvas.add(rect);
                 setIsDrawing(true);
-                rect.set('selectable', false);
             },
             mouseMove(event) {
                 if (!isDrawing || activeTool !== 'square') return;
@@ -101,7 +157,11 @@ export function Draw() {
             mouseUp() {
                 setIsDrawing(false);
                 setStartPoint(null);
-                setTempObject(null);
+                if (tempObject) {
+                    tempObject.set('selectable', true);
+                    canvas.setActiveObject(tempObject);
+                    setTempObject(null);
+                }
             },
         },
         circle: {
@@ -114,25 +174,27 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
+                if (isObjectSelected) return;
+
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
 
-                const circle = new fabric.Ellipse({ // Usando Ellipse para suportar oval
+                const circle = new fabric.Ellipse({
                     left: pointer.x,
                     top: pointer.y,
                     originX: 'center',
                     originY: 'center',
-                    rx: 1, // Raio X inicial
-                    ry: 1, // Raio Y inicial
+                    rx: 1,
+                    ry: 1,
                     stroke: 'black',
                     strokeWidth: 2,
                     fill: 'transparent',
+                    selectable: false,
                 });
 
                 setTempObject(circle);
                 canvas.add(circle);
                 setIsDrawing(true);
-                circle.set('selectable', false);
             },
             mouseMove(event) {
                 if (!isDrawing || activeTool !== 'circle' || !tempObject) return;
@@ -161,7 +223,11 @@ export function Draw() {
             mouseUp() {
                 setIsDrawing(false);
                 setStartPoint(null);
-                setTempObject(null);
+                if (tempObject) {
+                    tempObject.set('selectable', true);
+                    canvas.setActiveObject(tempObject);
+                    setTempObject(null);
+                }
             },
         },
         triangle: {
@@ -174,60 +240,50 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
+                if (isObjectSelected) return;
+
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
-        
-                const triangle = new fabric.Polygon([
-                    { x: pointer.x, y: pointer.y },
-                    { x: pointer.x, y: pointer.y },
-                    { x: pointer.x, y: pointer.y }
-                ], {
-                    stroke: 'black',
+                const triangle = new fabric.Triangle({
+                    left: pointer.x,
+                    top: pointer.y,
+                    width: 0,
+                    height: 0,
                     fill: 'transparent',
+                    stroke: 'black',
                     strokeWidth: 2,
-                    selectable: false
+                    originX: 'left',
+                    originY: 'top',
+                    selectable: false,
                 });
-        
                 setTempObject(triangle);
                 canvas.add(triangle);
                 setIsDrawing(true);
             },
             mouseMove(event) {
-                if (!isDrawing || activeTool !== 'triangle' || !tempObject) return;
-                
+                if (!isDrawing || activeTool !== 'triangle') return;
                 const pointer = canvas.getPointer(event.e);
-                const points = tempObject.get('points');
-        
-                points[1] = { x: pointer.x, y: pointer.y };
-                points[2] = { x: (points[0].x + points[1].x) / 2, y: points[0].y - Math.abs(points[1].x - points[0].x) };
-        
+                const width = Math.abs(pointer.x - startPoint.x);
+                const height = Math.abs(pointer.y - startPoint.y);
+                const left = Math.min(pointer.x, startPoint.x);
+                const top = Math.min(pointer.y, startPoint.y);
+
                 tempObject.set({
-                    points: points
+                    width: width,
+                    height: height,
+                    left: left,
+                    top: top,
                 });
-        
                 canvas.renderAll();
             },
             mouseUp() {
                 setIsDrawing(false);
                 setStartPoint(null);
-                setTempObject(null);
-            },
-        },        
-        eraser: {
-            activate() {
-                canvas.isDrawingMode = true;
-                // Define o pincel de desenho livre como um pincel de borracha
-                canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-                canvas.freeDrawingBrush.color = 'white'; // Define a cor como a cor de fundo do canvas
-                canvas.freeDrawingBrush.width = pencilWidth;
-                canvas.selection = false;
-                canvas.defaultCursor = 'crosshair';
-
-            },
-            deactivate() {
-                canvas.isDrawingMode = false;
-                canvas.selection = false;
-                canvas.defaultCursor = 'default';
+                if (tempObject) {
+                    tempObject.set('selectable', true);
+                    canvas.setActiveObject(tempObject);
+                    setTempObject(null);
+                }
             },
         },
         line: {
@@ -240,13 +296,15 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
+                if (isObjectSelected) return;
+
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
 
                 const line = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
                     stroke: 'black',
                     strokeWidth: 2,
-                    selectable: false
+                    selectable: false,
                 });
 
                 setTempObject(line);
@@ -268,39 +326,50 @@ export function Draw() {
             mouseUp() {
                 setIsDrawing(false);
                 setStartPoint(null);
-                setTempObject(null);
+                if (tempObject) {
+                    tempObject.set('selectable', true); 
+                    canvas.setActiveObject(tempObject);
+                    setTempObject(null);
+                }
             },
         },
         text: {
             activate() {
                 canvas.selection = false;
-                canvas.defaultCursor = 'text'; // Mudar o cursor para o cursor de texto
+                canvas.defaultCursor = 'text';
             },
             deactivate() {
                 canvas.selection = false;
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
+                if (isObjectSelected) return;
                 const pointer = canvas.getPointer(event.e);
+
+                const activeObject = canvas.getActiveObject();
+                if (activeObject && activeObject.type === 'i-text') {
+                    return;
+                }
 
                 const iText = new fabric.IText('Clique para editar', {
                     left: pointer.x,
                     top: pointer.y,
                     fontSize: 20,
                     fill: 'black',
-                    selectable: false,
+                    selectable: true,
                 });
 
                 setTempObject(iText);
                 canvas.add(iText);
-                canvas.setActiveObject(iText); // Definir o objeto como ativo para edição
-                iText.enterEditing(); // Iniciar a edição do texto
+                canvas.setActiveObject(iText);
+                iText.enterEditing();
                 setIsDrawing(true)
             },
-            mouseMove(event) {
-                if (!isDrawing || activeTool !== 'text' || !tempObject) return;
 
+            mouseMove(event) { 
+                if (!isDrawing || activeTool !== 'text' || !tempObject) return;
                 const pointer = canvas.getPointer(event.e);
+
                 tempObject.set({
                     left: pointer.x,
                     top: pointer.y
@@ -311,12 +380,12 @@ export function Draw() {
                 setIsDrawing(false)
                 setTempObject(null)
             },
+
         },
         svg: {
             activate() {
                 canvas.selection = false;
                 canvas.defaultCursor = 'pointer';
-                // Crie um input file hidden
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.svg, .png, .jpeg, .jpg';
@@ -331,8 +400,9 @@ export function Draw() {
                                 fabric.loadSVGFromString(event.target.result, (objects, options) => {
                                     const svgGroup = fabric.util.groupSVGElements(objects, options);
                                     canvas.add(svgGroup);
-                                    svgGroup.scaleToWidth(100)
+                                    svgGroup.scaleToWidth(100);
                                     canvas.centerObject(svgGroup);
+                                     canvas.setActiveObject(svgGroup);
                                     canvas.renderAll();
                                 });
                             } else {
@@ -340,9 +410,10 @@ export function Draw() {
                                 img.onload = () => {
                                     const fabricImg = new fabric.Image(img);
                                     canvas.add(fabricImg);
-                                    fabricImg.scaleToWidth(100)
-                                    canvas.centerObject(fabricImg)
-                                    canvas.renderAll()
+                                    fabricImg.scaleToWidth(100);
+                                    canvas.centerObject(fabricImg);
+                                    canvas.setActiveObject(fabricImg);
+                                    canvas.renderAll();
                                 };
                                 img.src = event.target.result;
                             }
@@ -355,18 +426,7 @@ export function Draw() {
                     }
                     input.value = '';
                 };
-                input.click(); //simula um clique no input
-
-            },
-            deactivate() {
-                canvas.selection = false;
-                canvas.defaultCursor = 'default';
-            },
-        },
-        select: {
-            activate() {
-                canvas.selection = true;
-                canvas.defaultCursor = 'default';
+                input.click();
             },
             deactivate() {
                 canvas.selection = false;
@@ -381,6 +441,7 @@ export function Draw() {
         }
         setActiveTool(toolName);
         toolActions[toolName]?.activate?.();
+        canvas.discardActiveObject().renderAll();
     }
 
     function handleMouseDown(event) {
@@ -391,72 +452,69 @@ export function Draw() {
         toolActions[activeTool]?.mouseMove?.(event);
     }
 
-    function handleMouseUp() {
-        toolActions[activeTool]?.mouseUp?.();
+    function handleMouseUp(event) {
+        toolActions[activeTool]?.mouseUp?.(event);
     }
 
-   useEffect(() => {
+
+    useEffect(() => {
         if (!canvas) return;
 
         canvas.on('mouse:down', handleMouseDown);
         canvas.on('mouse:move', handleMouseMove);
         canvas.on('mouse:up', handleMouseUp);
-        
-        const handleObjectMoving = (options) => {
-            if (activeTool === 'select') {
-                
-            } else{
-                 options.target.set({ left: options.target.left, top: options.target.top });
-                 options.target.setCoords();
-                 canvas.renderAll()
-            }
-            
-        };
-        canvas.on('object:moving', handleObjectMoving);
-        
+
         return () => {
-             canvas.off('mouse:down', handleMouseDown);
+            canvas.off('mouse:down', handleMouseDown);
             canvas.off('mouse:move', handleMouseMove);
             canvas.off('mouse:up', handleMouseUp);
-             canvas.off('object:moving', handleObjectMoving);
         };
-    }, [canvas, activeTool, isDrawing, startPoint, tempObject]);
+    }, [canvas, activeTool, isDrawing, startPoint, tempObject, isObjectSelected]);
 
-    useEffect(() => {
-        if (!canvas) return;
-
-        canvas.forEachObject((obj) => {
-            if (activeTool === 'select') {
-                obj.set('selectable', true);
-            } else {
-                obj.set('selectable', false);
-            }
-        });
-        canvas.renderAll();
-    }, [activeTool, canvas]);
 
     return (
         <Container>
             <Header />
             <button onClick={() => activateTool('pencil')}>Pincel</button>
+            <button onClick={() => activateTool('eraser')}>Borracha</button>
             <button onClick={() => activateTool('square')}>Quadrado</button>
             <button onClick={() => activateTool('circle')}>Círculo</button>
             <button onClick={() => activateTool('triangle')}>Triângulo</button>
             <button onClick={() => activateTool('line')}>Linha</button>
             <button onClick={() => activateTool('text')}>Texto</button>
-            <button onClick={() => activateTool('eraser')}>Borracha</button>
             <button onClick={() => activateTool('svg')}>imagem</button>
-            <button onClick={() => activateTool('select')}>Seleção livre</button>
 
-            <label htmlFor="pencil-width">Largura do Pincel:</label>
-            <input
-                type="number"
-                id="pencil-width"
-                value={pencilWidth}
-                onChange={(e) => setPencilWidth(Number(e.target.value))}
-                min="1"
-                max="20" // Limite opcional para largura
-            />
+
+            <div>
+                <label htmlFor="pencil-color">Cor do Pincel:</label>
+                <select
+                    id="pencil-color"
+                    value={pencilColor}
+                    onChange={(e) => setPencilColor(e.target.value)}
+                >
+                    <option value="black">Preto</option>
+                    <option value="white">Branco</option>
+                </select>
+
+                <label htmlFor="pencil-width">Largura do Pincel:</label>
+                <input
+                    type="number"
+                    id="pencil-width"
+                    value={pencilWidth}
+                    onChange={(e) => setPencilWidth(Number(e.target.value))}
+                    min="1"
+                    max="20"
+                />
+                <label htmlFor="eraser-width">Largura da Borracha:</label>
+                <input
+                    type="number"
+                    id="eraser-width"
+                    value={eraserWidth}
+                    onChange={(e) => setEraserWidth(Number(e.target.value))}
+                    min="1"
+                    max="100"
+                />
+            </div>
 
             <canvas ref={canvasRef} id="fabric-canvas" />
         </Container>
