@@ -1,7 +1,6 @@
 import { Container } from './styles';
 import React, { useState, useRef, useEffect } from 'react';
 import * as fabric from 'fabric';
-import { EraserBrush } from 'erase2d'
 
 import { Header } from '../../components/Header';
 
@@ -12,10 +11,8 @@ export function Draw() {
     const [isDrawing, setIsDrawing] = useState(false);
     const [startPoint, setStartPoint] = useState(null);
     const [tempObject, setTempObject] = useState(null);
-    const [pencilWidth, setPencilWidth] = useState(1);
-    const [isObjectSelected, setIsObjectSelected] = useState(false);
-    const [pencilColor, setPencilColor] = useState('black');
-    const [eraserWidth, setEraserWidth] = useState(10);
+    const [pencilWidth, setPencilWidth] = useState(5);
+    const [eraserWidth, setEraserWidth] = useState(5);
 
 
     useEffect(() => {
@@ -26,16 +23,6 @@ export function Draw() {
             selection: false,
         });
         setCanvas(newCanvas);
-
-        newCanvas.on('object:added', (event) => {
-            if (event.target) {
-              event.target.erasable = true;
-            }
-        });
-      
-        newCanvas.on('path:created', (event) => {
-            event.path.erasable = true;
-        });
 
         return () => {
             newCanvas.dispose();
@@ -52,37 +39,13 @@ export function Draw() {
     }, [pencilWidth, pencilColor, canvas]);
 
 
-    useEffect(() => {
-        if (!canvas) return;
-
-        const handleSelectionCreated = (event) => {
-            setIsObjectSelected(true);
-        }
-
-        const handleSelectionCleared = (event) => {
-            setIsObjectSelected(false);
-        }
-
-        canvas.on('selection:created', handleSelectionCreated);
-        canvas.on('selection:cleared', handleSelectionCleared);
-
-        return () => {
-            canvas.off('selection:created', handleSelectionCreated);
-            canvas.off('selection:cleared', handleSelectionCleared);
-        };
-
-    }, [canvas])
-
-
-
     const toolActions = {
         pencil: {
             activate() {
                 canvas.isDrawingMode = true;
                 canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-                canvas.freeDrawingBrush.color = pencilColor;
+                canvas.freeDrawingBrush.color = "black";
                 canvas.freeDrawingBrush.width = pencilWidth;
-                canvas.freeDrawingBrush.strokeLineCap = 'butt';
                 canvas.selection = false;
                 canvas.defaultCursor = 'crosshair';
             },
@@ -95,9 +58,10 @@ export function Draw() {
         eraser: {
             activate() {
                 canvas.isDrawingMode = true;
-                canvas.freeDrawingBrush = new EraserBrush(canvas);
-                canvas.freeDrawingBrush.width = eraserWidth;
-                canvas.freeDrawingBrush.inverted = false;
+                canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+                canvas.freeDrawingBrush.color = "white";
+                canvas.freeDrawingBrush.width = pencilWidth;
+                canvas.selection = false;
                 canvas.defaultCursor = 'crosshair';
             },
             deactivate() {
@@ -116,7 +80,7 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
-                if (isObjectSelected) return;
+                
 
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
@@ -174,7 +138,7 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
-                if (isObjectSelected) return;
+                
 
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
@@ -240,7 +204,7 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
-                if (isObjectSelected) return;
+                
 
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
@@ -296,7 +260,7 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
-                if (isObjectSelected) return;
+                
 
                 const pointer = canvas.getPointer(event.e);
                 setStartPoint({ x: pointer.x, y: pointer.y });
@@ -343,7 +307,7 @@ export function Draw() {
                 canvas.defaultCursor = 'default';
             },
             mouseDown(event) {
-                if (isObjectSelected) return;
+                
                 const pointer = canvas.getPointer(event.e);
 
                 const activeObject = canvas.getActiveObject();
@@ -486,16 +450,7 @@ export function Draw() {
 
 
             <div>
-                <label htmlFor="pencil-color">Cor do Pincel:</label>
-                <select
-                    id="pencil-color"
-                    value={pencilColor}
-                    onChange={(e) => setPencilColor(e.target.value)}
-                >
-                    <option value="black">Preto</option>
-                    <option value="white">Branco</option>
-                </select>
-
+                
                 <label htmlFor="pencil-width">Largura do Pincel:</label>
                 <input
                     type="number"
