@@ -3,5 +3,6 @@ export const DEVICE_BREAKPOINTS = {
     MM: "375px",
     ML: "425px",
     TABLET: "768px",
-    LAPTOP: "1024px"
+    LAPTOP: "1024px",
+    LAPTOP_L: "1440px"
 }

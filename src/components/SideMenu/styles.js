@@ -12,6 +12,7 @@ export const Container = styled.aside`
 
     display: flex;
     flex-direction: column;
+    z-index: 1000 !important;
 
 `
 
