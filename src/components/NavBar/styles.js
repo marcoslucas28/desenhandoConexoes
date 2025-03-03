@@ -16,7 +16,7 @@ export const Container = styled.nav`
         width: 80%;
     }
 
-    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}) {
+    @media (min-width: ${DEVICE_BREAKPOINTS.LAPTOP}) {
         flex-direction: row;
         width: auto;
         margin: 0;
@@ -35,6 +35,17 @@ export const Container = styled.nav`
             font-size: 1.6rem;
             border: none;
             background: ${({theme}) => theme.COLORS.GRADIENT_GREEN};
+            padding: 1rem;
+            max-width: 20rem;
+            color: ${({theme}) => theme.COLORS.WHITE};
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        #print-button {
+            font-size: 1.6rem;
+            border: none;
+            background: ${({theme}) => theme.COLORS.GRADIENT_BLUE};
             padding: 1rem;
             max-width: 20rem;
             color: ${({theme}) => theme.COLORS.WHITE};

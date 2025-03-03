@@ -5,6 +5,7 @@ import { ButtonText } from '../../components/ButtonText'
 import { FaHome } from 'react-icons/fa'
 import { FaUsers } from 'react-icons/fa'
 import { FaPencilAlt } from 'react-icons/fa'
+import { FaPrint } from "react-icons/fa6"
 
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -30,6 +31,10 @@ export function NavBar({...rest}){
                 </div>
                 <div>
                     <ButtonText id="draw-button" onClick={() => handleNavigation("/draw")} title="Desenhe" icon={FaPencilAlt} />
+                </div>
+
+                <div>
+                    <ButtonText id="print-button" onClick={() => handleNavigation("/print")} title="Imprima" icon={FaPrint } />
                 </div>
                 
         </Container>

@@ -21,7 +21,7 @@ export const Home = styled.header`
         display: none;
     }
 
-    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+    @media (min-width: ${DEVICE_BREAKPOINTS.LAPTOP}){
         #navbar {
             display: flex;
         }
@@ -50,7 +50,7 @@ export const Container = styled.header`
         display: none;
     }
 
-    @media (min-width: ${DEVICE_BREAKPOINTS.TABLET}){
+    @media (min-width: ${DEVICE_BREAKPOINTS.LAPTOP}){
         #navbar {
             display: flex;
         }
